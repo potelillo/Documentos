@@ -235,6 +235,111 @@ spec:
 
 # COMO SIEMPRE, SE HACE EL APPLY DESPUES DE MODIFICAR
 
+# ---------------- VOLUMENES ---------------- #
+
+# LOS VOLUMENES NOS SERAN UTILES PARA NO PERDER INFORMACION, YA QUE LOS CONTENEDORES
+# PUEDEN TENER POCA VIDA UTIL, ENTONCES PERDERIAMOS LA INFORMACION,
+# LO MAS COMUN EN PRODUCCION ES USAR UN SERVIDOR NFS, PERO TAMBIEN TENEMOS
+# LA OPCION DE USAR NUESTRA MAQUINA LOCAL, AUNQUE SOLO PARA FORMACION
+# AL ARCHIVO DE NUESTRA APP .yml TENDRIAMOS QUE AÑADIR LO SIGUIENTE:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pd
+  labels:
+    app: test-app
+
+spec:
+  containers:
+  - image: nginx
+    name: test-container
+    volumeMounts:
+    - mountPath: "/usr/share/nginx/html" # Indicamos el volumen
+      name: host-volume
+
+  volumes:
+#  - name: empty-volume --> Directorio vacio
+#    emptyDir: {} 
+#  - name: host-volume --> Para almacenar la informacion en la maquina local
+#    hostPath:
+#      path: /home/docker/html
+#      type: Directory
+  - name: nfs-volume # --> Servidor en red
+      nfs: 
+        server: 10.108.211.244 # Nuestro servidor NFS
+        path: / # La ruta
+
+  
+---
+Servicio...
+
+# ---------------- VOLUMENES PERSISTENTES ---------------- #
+
+# ESTO NOS VA A PERMITIR QUE EL ADMINISTRADOR DESTINE UN VOLUMEN DONDE ALMACENAR ARCHIVOS
+# NOS PERMITIRA AÑADIR REGLAS COMO SI QUEREMOS QUE EL ESPACIO SEA DE LECTURA, O SIMPLEMENTE
+# SOLO DE ESCRITURA, O ESCRITURA Y LECTURA
+ 
+apiVersion: v1 # ESTE SERÁ EL PRIMER OBJETO QUE CREEMOS INDEPENDIENTE DEL POD
+kind: PersistentVolume
+metadata:
+  name: pv0002
+spec:
+  capacity:
+    storage: 0.2Gi # Almacenamiento disponible
+  accessModes:
+    - ReadWriteOnce # Modo de Acceso, Lectura/Escritura
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: standard
+  hostPath: # Donde se va a almacenar la informacion, podemos poner un directorio remoto como vemos abajo
+      path: /home/docker/html
+      type: Directory
+#  nfs: 
+#    server: 10.108.211.244 
+#    path: / 
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim # PARA PODER SOLICITAR ESPACIOS PARA ALMACENAR INFORMACION, LO QUE SE VA A REQUERIR PARA LA APP
+metadata:
+  name: claim-1 # Nomber
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 0.2Gi # El espacio solicitado
+---
+apiVersion: v1 # NUESTRA APP
+kind: Pod
+metadata:
+  name: task-pv-pod
+  labels:
+    app: test-app
+
+spec:
+  volumes:
+    - name: task-pv-storage
+      persistentVolumeClaim:
+        claimName: claim-1 # El volumen persistente solicitado, en este caso claim-1
+  containers:
+    - name: task-pv-container
+      image: nginx
+      ports:
+        - containerPort: 80
+          name: "http-server"
+      volumeMounts:
+        - mountPath: "/usr/share/nginx/html" #El volumen del contenedor
+          name: task-pv-storage
+---
+Servicios..
+
+# ---------------- INGRESS ---------------- #
+
+# INGRESS NOS PROPORCIONARA EL SERVICIO DE ENRUTAMIENTO, SI DISPONEMOS DE VARIOS PODS
+# PODEMOS CONFIGURAR RUTAS POR SI TENEMOS NUESTRA APLICACION DIVIDIDA EN MICROSERVICIOS
+#
+
 # ---------------- COMANDOS DE UTILIDAD KUBERNETES ---------------- #
 
 # OBTENER INFORMACION NODOS, SERVICIOS, PODS

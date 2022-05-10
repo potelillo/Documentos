@@ -9,3 +9,7 @@ git branch -M main
 git remote add origin https://github.com/usuario/repo.git # AÑADIMOS EL REPOSITORIO REMOTO
 git push -u origin main # SUBIMOS LOS ARCHIVOS AL REPOSITORIO
 git remote remove origin # ELIMINAR REPOSITORIO REMOTO
+
+# ACCESO MEDIANTE SSH
+
+# GENERAMOS CLAVE RSA, NOS VAMOS A GIT Y LA COPIAMOS EN SETTINGS
