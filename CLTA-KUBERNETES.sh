@@ -329,7 +329,7 @@ spec:
         - containerPort: 80
           name: "http-server"
       volumeMounts:
-        - mountPath: "/usr/share/nginx/html" #El volumen del contenedor
+        - mountPath: "/usr/share/nginx/html" # El volumen del contenedor
           name: task-pv-storage
 ---
 Servicios..
@@ -338,7 +338,109 @@ Servicios..
 
 # INGRESS NOS PROPORCIONARA EL SERVICIO DE ENRUTAMIENTO, SI DISPONEMOS DE VARIOS PODS
 # PODEMOS CONFIGURAR RUTAS POR SI TENEMOS NUESTRA APLICACION DIVIDIDA EN MICROSERVICIOS
-#
+# POR EJEMPLO, IMAGINEMOS QUE TENEMOS DOS PODS, UNO CON UN SERVIDOR WEB DE NGINX, Y OTRO 
+# CON APACHE, GENERAREMOS UN INGRESS QUE ENCAMINE EL TRAFICO QUE VAYA HACIA CADA SERVER,
+# TENDREMOS QUE ENLAZAR LA RUTA CON EL NOMBRE DEL SERVICIO DE CADA SERVIDOR:
+
+apiVersion: v1                      # TENEMOS EL POD DE NGINX
+kind: Pod
+metadata:
+  name: test-pd1              
+  labels:
+    app: test-nginx                 # LA ETIQUETAS
+
+spec: 
+  containers:
+  - image: nginx                    # EL CONTENEDOR
+    name: test-container1
+---
+apiVersion: v1                      # TAMBIEN TENDREMOS EL SERVIDOR DE APACHE
+kind: Pod
+metadata:
+  name: test-pd2
+  labels:
+    app: test-apache
+
+spec:
+  containers:
+  - image: httpd
+    name: test-container2
+---
+apiVersion: v1                      # EL SERVICIO DE NGINX
+kind: Service
+metadata:
+  name: nginx1                      # NOMBRE DEL SERVICIO
+spec:
+  type: NodePort
+  selector:
+    app: test-nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+---
+apiVersion: v1                      # EL SERVICIO DE APACHE
+kind: Service
+metadata:
+  name: apache1                     # NOMBRE DEL SERVICIO
+spec:
+  type: NodePort
+  selector:
+    app: test-apache
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+---
+apiVersion: networking.k8s.io/v1    # TENEMOS NUESTRO INGRESS  
+kind: Ingress
+metadata:
+  name: ingress1
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /nginx
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx1            # ENLAZAMOS EL SERVICIO DE NGINX CON SU RUTA CORRESPONDIENTE
+            port: 
+              number: 80
+      - path: /apache
+        pathType: Prefix
+        backend:
+          service:
+            name: apache1           # ENLAZAMOS EL SERVICIO DE APACHE CON SU RUTA CORRESPONDIENTE
+            port: 
+              number: 80
+
+# ---------------- DAEMONSETS ---------------- #
+
+# ESTO SERA UN TIPO DE OBJETO ENCARGADO DE MANTENER EL POD DESPLEGADO EN CADA
+# NODO DEL CLUSTER, TAMBIEN PODREMOS ESPECIFICAR EN QUE TIPO DE NODOS, ESTO 
+# NOS OFRECE LA POSIBILIDAD DE NO TENER PORQUE SABER CUANTOS NODOS HAY EN NUESTRO 
+# CLUSTER, SI AÑADIMOS UN NUEVO NODO, DAEMON SE ENCARGARA DE DESPLEGAR EL POD EN 
+# ESTE NODO NUEVO, ESTE METODO NO ES ACONSEJABLE PARA GESTIONAR LA ESCALABILIDAD
+# DE LA APLICACION, LO CONFIGURAMOS DE LA SIGUIENTE MANERA:
+
+apiVersion: apps/v1 
+kind: DaemonSet
+metadata:
+  name: daemonset-pods
+
+spec:
+  selector:
+    matchLabels:
+      name: daemonset-pods
+  template:
+    metadata:
+      labels:
+        name: daemonset-pods
+    spec:
+      containers:
+        - name: test1
+          image: nginx
 
 # ---------------- COMANDOS DE UTILIDAD KUBERNETES ---------------- #
 
