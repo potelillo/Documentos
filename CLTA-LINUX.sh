@@ -37,4 +37,16 @@ sudo nano /etc/samba/smb.conf ## aqui indicamos la carpeta que vamos a aÃ±adir
 chmod 777 [CARPETA] # PERMISOS A LA CARPETA
 smbpasswd -a [nombre-usuario] # GENERAMOS LA CLAVE PARA EL USUARIO
 
+# ---------------- INSTALACION DOCKER - DOCKER COM 2022 ---------------- # 
+
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+apt-cache policy docker-ce
+sudo apt install docker-ce
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+
 
