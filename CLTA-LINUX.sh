@@ -33,4 +33,8 @@ sudo nano /etc/samba/smb.conf ## aqui indicamos la carpeta que vamos a aÃ±adir
    writable = yes
    read only = no
    browsable = yes
-chmod 0777 [CARPETA]
+
+chmod 777 [CARPETA] # PERMISOS A LA CARPETA
+smbpasswd -a [nombre-usuario] # GENERAMOS LA CLAVE PARA EL USUARIO
+
+
