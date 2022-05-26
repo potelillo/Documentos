@@ -9,16 +9,17 @@ pwd         # MUESTRA EL DIRECTORIO ACTUAL
 rm          # BORRAR ARCHIVO
 rmdir       # BORRAR UN DIRECTORIO
 rmdir -r    # BORRAR UN DIRECTORIO CON ARCHIVOS O DIRECTORIOS DENTRO
-tree        # MUESTRA EL ARBOL DE DIRECTORIOS
-cat         # VISUALIZAR UN ARCHIVO
-nano        # VISUALIZAR Y EDITAR UN ARCHIVO
-cp or-des   # COPIAR UN ARCHIVO O DIRECTORIO
-mv or-des   # MOVER UN ARCHIVO, O CAMBIARLE EL NOMBRE
-chmod       # CAMBIAR PERMISOS
-chmod -R    # PERMISOS RECURSIVOS (A TODOS LOS DIRECTORIOS)
-grep        # BUSCAR OCURRENCIAS
-whoami      # VER CON QUE USUARIO ESTAMOS TRABAJANDO
-df -BM      # VER ALMACENAMIENTO DISPONIBLE
+tree                   # MUESTRA EL ARBOL DE DIRECTORIOS
+cat                    # VISUALIZAR UN ARCHIVO
+nano                   # VISUALIZAR Y EDITAR UN ARCHIVO
+cp or-des              # COPIAR UN ARCHIVO O DIRECTORIO
+mv or-des              # MOVER UN ARCHIVO, O CAMBIARLE EL NOMBRE
+chmod                  # CAMBIAR PERMISOS
+chmod -R               # PERMISOS RECURSIVOS (A TODOS LOS DIRECTORIOS)
+grep                   # BUSCAR OCURRENCIAS
+whoami                 # VER CON QUE USUARIO ESTAMOS TRABAJANDO
+df -BM                 # VER ALMACENAMIENTO DISPONIBLE
+/etc/init.d/ssh start  # INICIAR SERVICIO SSH
 
 
 
@@ -48,5 +49,26 @@ sudo apt install docker-ce
 sudo curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
+# ---------------- ESTABLECER IP ESTATICA EN UBUNTU 20 ---------------- # 
 
+sudo nano /etc/netplan/00-installer-config.yaml
+
+# ARCHIVO:
+
+network:
+  version: 2
+  renderer: networkd
+  ethenets:
+    enp0s3:
+      dhcp4: false
+      dhcp6: false
+      addresses:
+       - 192.168.1.54
+      routes:
+       - to: default
+         via: 192.168.1.1
+      nameservers:
+        addresses: [8.8.8.8]
+        
+sudo netplan apply
 
