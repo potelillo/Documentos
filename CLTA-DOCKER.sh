@@ -4,7 +4,7 @@ sudo docker ps # COMPROMAR LOS CONTENEDORES ACTIVOS
 sudo docker run # LEVANTAR EL CONTENEDOR CON DOCKER
 sudo docker rm [nombreContenedor o ID] # BORRAR UN CONTENEDOR DOCKER
 sudo docker-compose up -d # LEVANTAR EL DOCKER COMPOSE
-sudo docker exec -it [IDCONTENEDOR] bash # ACCEDER A LA CONSOLA DEL CONTENEDORES
+sudo docker exec -it -u root [IDCONTENEDOR] bash # ACCEDER A LA CONSOLA DEL CONTENEDORES
 docker inspect nombre_del_contenedor | grep IPAddress # VER IP DE UN CONTENEDOR
 sudo docker-compose down # TIRAR SERVIDOR WEB
 
