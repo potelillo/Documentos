@@ -17,10 +17,21 @@ mv or-des              # MOVER UN ARCHIVO, O CAMBIARLE EL NOMBRE
 chmod                  # CAMBIAR PERMISOS
 chmod -R               # PERMISOS RECURSIVOS (A TODOS LOS DIRECTORIOS)
 grep                   # BUSCAR OCURRENCIAS
+grep -v                # BUSCAR OCURRENCIAS Y QUITARLAS AL IMPRIMIRLAS POR PANTALLA
 whoami                 # VER CON QUE USUARIO ESTAMOS TRABAJANDO
 df -BM                 # VER ALMACENAMIENTO DISPONIBLE
 /etc/init.d/ssh start  # INICIAR SERVICIO SSH
+awk                    # OBTENER, MOSTRAR Y DIVIDIR CADENAS (SEMEJANTE A LA FUNCION SPLIT)
+ls -lh                 # MIRAR DIRECTORIOS CON EL TAMAÑO QUE OCUPAN
+pkginfo| grep tar      # COMPROBAR VERSION DEL TAR SOLARIS
+pkginfo -l SUNWgtar    # COMPROBAR VERSION DEL TAR SOLARIS
+tr -d "\n\r" < salida.txt > salida2.txt # ELIMINAR SALTOS DE LINEA
+while IFS= read -r line; do echo $line"-"; done < maquinas.txt > salida.txt # LEER FICHERO Y FORMATEAR TEXTO
 
+# ---------------- COMANDOS UNIX/LINUX CURRO ---------------- # 
+
+sh recuento_maquinas_v2.sh |grep -v "=" | grep -v "-" | grep -v ^$|awk '{ print $0".*,"}'
+# Obtener máquinas con formato para lanzar ejecución en ansible
 
 
 # ---------------- COMPARTIR CARPETA EN UBUNTU CON SAMBA ---------------- # 
