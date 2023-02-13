@@ -1,0 +1,153 @@
+# ---------------- COMANDOS ---------------- #
+
+## LOS COMANDOS BÁSICOS SON IGUAL QUE EN EL CMD DE WINDOWS 
+## CATEGORÍAS DE COMANDOS EN POWERSHELL
+#       - Cmdlets                           --> Comandos nativos de powershell 
+#       - Funciones                         --> Bloque de código almacenado en la memoria del sistema
+#       - Scripts                           --> Bloque de código almacenado en un archivo
+#       - Configuraciones (PowerShell 4)    --> Aplicaciones del sistema ejecutadas con PS
+
+Get-Location                                            # Equivalente a pwd, ver el path del directorio actual
+New-Item                                                # Crear nuevo archivo
+Get-Content                                             # Ver el contenido de un archivo
+Set-Content                                             # Añadir contenido a un archivo
+Get-Service                                             # Ver servicios del sistema
+Get-Process                                             # Ver los procesos del sistema
+New-Alias -Name help -Value Get-Help                    # Crear un alias
+Get-Alias                                               # Ver alias/cmdlets en el sistema
+Get-HotFix                                              # Ver info actualizaciones
+New-Item -Path 'C:\prueba'                              # Crear carpeta
+Copy-Item 'D:\temp\Test Folder' 'D:\temp\Test Folder1'  # Copiar carpeta o directorio
+Remove-Item 'D:\temp\Test Folder1'                      # Eliminar carpeta o archivo
+Move-Item D:\temp\Test D:\temp\Test1                    # Mover archivo o directorio
+Rename-Item "D:\temp\Test Test1"                        # Renombrar archivo o directorio
+Clear-Content D:\temp\test\test.txt                     # Borrar el contenido de un fichero
+Get-Date                                                # Obtener fecha y hora del sitema
+Get-date -DisplayHint time                              # Obtener solo la hora
+Get-date -DisplayHint Date                              # Obtener solo la fecha
+$file = Get-Content D:\temp\test\test.txt               # Meter el contenido de un archivo en una variable
+Get-Service | Format-List                               # Con format list pintaremos bonito cualquier salida de texto
+Get-Service | Where-Object {$_.Status -eq "Stopped"}    # Comprobamos la equivalencia deseada
+1000,2000,3000 | ForEach-Object -Process {$_/1000}      # Bucle en la línea de comandos
+Start-Sleep -s 15                                       # Parar un proceso determinado en X o ningún segundos
+$read = Read-Host "Please put your choice"              # Leer texto por pantalla
+write-host("This is if statement")                      # Escribir por pantalla
+echo "This is if statement"                             # Otra forma para escibir por pantalla 
+Write-Warning  "Test Warning"                           # Envíar mensaje de error
+Set-ExecutionPolicy Unrestricted                        # Activar ejecución de scripts en el sistema
+Get-ChildItem -Filter *.txt .                           # Buscar archivos en directorios con un nombre o extensión concretos
+pushd                                                   # Guardamos la ubicación actual en una variable
+popd                                                    # Retornamos a la ubicación almacenada anteriormente
+choco install wsl                                       # Instalar software para correr subsistemas Linux en windows
+wsl -l -v                                               # Ver subsistemas instalados
+wsl --list --online                                     # Ver subsistemas disponibles para instalar 
+wsl --install --distribution Ubuntu-20.04               # Instalar subsistema, en este caso ubuntu
+wsl --setdefault Ubuntu-20.04                           # Establecer un subsistema como default, en este caso ubuntu
+bash                                                    # Ejecutar subsistema
+wsl --shutdown                                          # Finalizar sesión de todos los subsistemas
+
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString(' https://chocolatey.org/install.ps1'))
+choco install   # Instalar un paquete
+
+# ---------------- VARIABLES ---------------- #
+
+# VARIABLES ESPECIALES
+
+$$	                # Contiene el último token de la última línea introducida
+$?	                # Contiene el estado de la última operación realizada
+$^	                # Contiene el primer token de la última línea introducida
+$_	                # Usar el mismo comando de antes de la tubería en una combinación de comandos
+$ARGS	            # Array con los parámetros que le pasamos a una función
+$CONSOLEFILENAME	# Path donde está el archivo
+$ERROR	            # Array con los errores más recientes
+$EVENT	            # Representa el evento en ejecución
+$EVENTARGS	        # Representa el primer argumento del evento que deriva de EventArgs del evento que se está procesando.
+$EVENTSUBSCRIBER	# Represents a PSEventSubscriber object that represents the event subscriber of the event that is being processed.
+$EXECUTIONCONTEXT	# Represents an EngineIntrinsics object that represents the execution context of the PowerShell host.
+$FALSE	            # Represents FALSE. You can use this variable to represent FALSE in commands and scripts instead of using the string "false".
+$FOREACH	        # Represents the enumerator (not the resulting values) of a ForEach loop. You can use the properties and methods of enumerators on the value of the $ForEach variable.
+$HOME	            # Represents the full path of the users home directory
+
+$location = Get-Location                                # Podemos introducir un conmando dentro de una variable
+$counter = 0                                            # También podemos introducir un valor normal
+$hash = @{ ID = 1; Shape = "Square"; Color = "Blue"}    # Definir un array clave valor
+$array = @("item1", "item2", "item3")                   # Definir un array
+$Global:algo                                            # Array con variables globales de la consola
+
+
+# ---------------- OPERADORES ---------------- #
+
+eq (equals)	                    # Compares two values to be equal or not.	A -eq B will give false
+ne (not equals)	                # Compares two values to be not equal.	A -ne B will give true
+gt (greater than)	            # Compares first value to be greater than second one.	B -gt A will give true
+ge (greater than or equals to)	# Compares first value to be greater than or equals to second one.	B -ge A will give true
+lt (less than)	                # Compares first value to be less than second one.	B -lt A will give false
+le (less than or equals to)	    # Compares first value to be less than or equals to second one.	B -le A will give false
+
+=	# Simple assignment operator. C = A + B will assign value of A + B into C
++=	# Add AND assignment operator. C += A is equivalent to C = C + A
+-=	# Subtract AND assignment operator. C -= A is equivalent to C = C - A
+
+AND # (logical and) (A -AND B) is false
+OR  # (logical or) (A -OR B) is true
+NOT # (logical not) -NOT(A -AND B) is true
+
+>   # (Redirectional Opeator) dir > test.log
+
+
+# ----------------- BUCLES ----------------- #
+
+# BUCLE FOR #
+
+for($i = 0; $i -lt $array.length; $i++){ 
+    $array[$i] 
+}
+
+# BUCLE FOREACH #
+
+foreach ($element in $array) {
+     $element 
+}
+
+$array | foreach { 
+            $_ # CON VARIABLE ESPECIAL
+        }
+
+
+# BUCLE WHILE #
+
+while($counter -lt $array.length){
+    $array[$counter]
+    $counter += 1
+}
+
+# BUCLE DO WHILE #
+
+do {
+    $array[$counter]
+    $counter += 1
+} while($counter -lt $array.length)
+
+# --------------- CONDICIONALES --------------- #
+
+# IF NORMAL #
+
+if(Boolean_expression) {
+    # CONDICIÓN
+} elseif(Boolean_expression2){
+    # CONDICIÓN 2
+} else {
+    # CONDICIÓN 3
+}
+
+
+# SWITCH #
+
+switch($variable){
+    1 {"One"}
+    2 {"Two"}
+    3 {"Three"}
+    4 {"Four"}
+    3 {"Three Again"}
+    "CUATRO"{"ALGO"}
+ }
